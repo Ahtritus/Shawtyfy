@@ -2,10 +2,10 @@ import express from "express";
 import { nanoid } from "nanoid";
 import mongoose from "mongoose";
 import Url from "./models/url.model.js";
-import dotenv from 'dotenv'
+import dotenv from "dotenv";
 dotenv.config();
 
-const MONGO_CONNECTION = process.env.MONGO_CONNECTION
+const MONGO_CONNECTION = process.env.MONGO_CONNECTION;
 
 mongoose.connect(MONGO_CONNECTION, {
   useNewUrlParser: true,
@@ -30,7 +30,7 @@ app.post("/shorten", async (req, res) => {
   if (!originalUrl) {
     return res.status(400).json({ error: "Original URL is required." });
   }
-  const shortUrl = "shatwyfy.vercel.app/" + nanoid(8);
+  const shortUrl = nanoid(8);
   const newUrl = new Url({
     originalUrl,
     shortUrl,
@@ -41,6 +41,16 @@ app.post("/shorten", async (req, res) => {
   } catch (error) {
     response.status(500).send(error);
   }
+});
+
+app.get("/:shortUrl", async (req, res) => {
+  const shortUrl = req.params.shortUrl;
+  const url = await Url.findOne({ shortUrl });
+  if (url == null) {
+    return res.sendStatus(404);
+  }
+
+  res.json({ originalUrl: url.originalUrl });
 });
 
 export default app;
