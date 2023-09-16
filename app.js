@@ -43,7 +43,7 @@ app.post("/shorten", async (req, res) => {
   });
   try {
     await newUrl.save();
-    res.json(newUrl);
+    return res.json(newUrl);
   } catch (error) {
     response.status(500).send(error);
   }
@@ -51,6 +51,12 @@ app.post("/shorten", async (req, res) => {
 
 app.get("/:shortUrl", async (req, res) => {
   const shortUrl = req.params.shortUrl;
+
+  // should have followed the normal url convention but /shorturl just seems shorter in normal cases
+  if (shortUrl == "all") {
+    const urls = await Url.find();
+    return res.json(urls);
+  }
   const url = await Url.findOne({ shortUrl });
   if (url == null) {
     return res.sendStatus(404);

@@ -104,4 +104,19 @@ describe("Test the /:shortUrl endpoint", () => {
     const secondUpdatedUrl = await urlModel.findOne({ shortUrl: testUrl.shortUrl });
     expect(secondUpdatedUrl.visited).toEqual(2);
   });
+
+  test("should return all URLs in the database", async () => {
+    const updatedUrl = await urlModel.find()
+    const originalSize = updatedUrl.length;
+
+    testUrl = new urlModel({
+      originalUrl: "https://www.example.com",
+      shortUrl: "test1234",
+    });
+    await testUrl.save();
+
+    const response = await request(app).get("/all");
+    expect(response.status).toEqual(200);
+    expect(response.body).toHaveLength(originalSize + 1);
+  });
 });
