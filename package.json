@@ -1,0 +1,21 @@
+{
+  "name": "shawtyfy",
+  "version": "1.0.0",
+  "description": "simple light weight url shortener",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "url",
+    "shortener",
+    "node"
+  ],
+  "author": "Sutirtha",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^7.5.2",
+    "nanoid": "^5.0.1"
+  }
+}
