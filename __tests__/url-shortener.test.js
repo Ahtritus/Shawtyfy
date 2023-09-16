@@ -89,10 +89,19 @@ describe("Test the /:shortUrl endpoint", () => {
       originalUrl: "https://www.example.com",
       shortUrl: "test1234",
     });
-    await testUrl.save();
+    const savedData = await testUrl.save();
+    expect(savedData.visited).toEqual(0);
 
     const response = await request(app).get("/" + testUrl.shortUrl);
     expect(response.status).toEqual(302);
-    expect(response.header.location).toEqual(testUrl.originalUrl);
+    
+    const updatedUrl = await urlModel.findOne({ shortUrl: testUrl.shortUrl });
+    expect(updatedUrl.visited).toEqual(1);
+
+    const secondResponse = await request(app).get("/" + testUrl.shortUrl);
+    expect(secondResponse.status).toEqual(302);
+    
+    const secondUpdatedUrl = await urlModel.findOne({ shortUrl: testUrl.shortUrl });
+    expect(secondUpdatedUrl.visited).toEqual(2);
   });
 });

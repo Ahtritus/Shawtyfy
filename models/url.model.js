@@ -16,6 +16,10 @@ const urlSchema = new Schema({
     required: true,
     unique: true,
   },
+  visited: {
+    type: Number,
+    default: 0,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

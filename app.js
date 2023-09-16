@@ -56,6 +56,8 @@ app.get("/:shortUrl", async (req, res) => {
     return res.sendStatus(404);
   }
 
+  await Url.updateOne({ shortUrl: shortUrl }, { $inc: { visited: 1 } });
+
   res.redirect(url.originalUrl);
 });
 
