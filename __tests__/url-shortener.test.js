@@ -15,7 +15,6 @@ afterAll(async () => {
   await mongoose.connection.close();
 });
 
-
 describe("Test the GET / endpoint", () => {
   test("It should response the GET method", async () => {
     const response = await request(app)
@@ -39,13 +38,36 @@ describe("Test the POST /shorten endpoint", () => {
       .set("Accept", "application/json")
       .expect(200);
 
-    testUrl = response.body
+    testUrl = response.body;
 
     expect(response.body).toHaveProperty("originalUrl", originalUrl);
     expect(response.body).toHaveProperty("shortUrl");
     expect(response.body.shortUrl).toMatch(/^\S{8}$/); // Match a URL with 8 characters
     expect(response.body.originalUrl).toEqual(originalUrl);
+  });
 
+  test("should return the same shortened URL when given the same original URL", async () => {
+    const originalUrl = "https://example.com/hello-world-123";
+
+    const firstResponse = await request(app)
+      .post("/shorten")
+      .send({ originalUrl })
+      .set("Content-Type", "application/json")
+      .set("Accept", "application/json")
+      .expect(200);
+
+    expect(firstResponse.body.shortUrl).toMatch(/^\S{8}$/); // Match a URL with 8 characters
+    expect(firstResponse.body.originalUrl).toEqual(originalUrl);
+
+    const secondResponse = await request(app)
+      .post("/shorten")
+      .send({ originalUrl })
+      .set("Content-Type", "application/json")
+      .set("Accept", "application/json")
+      .expect(200);
+
+    expect(secondResponse.body.shortUrl).toEqual(firstResponse.body.shortUrl);
+    expect(secondResponse.body.originalUrl).toEqual(originalUrl);
   });
 
   test("should return a 400 Bad Request error when original URL is missing", async () => {
@@ -65,7 +87,7 @@ describe("Test the /:shortUrl endpoint", () => {
   test("should return the original URL when given a valid short URL", async () => {
     testUrl = new urlModel({
       originalUrl: "https://www.example.com",
-      shortUrl: "test1234"
+      shortUrl: "test1234",
     });
     await testUrl.save();
 

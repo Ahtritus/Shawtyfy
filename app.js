@@ -30,6 +30,12 @@ app.post("/shorten", async (req, res) => {
   if (!originalUrl) {
     return res.status(400).json({ error: "Original URL is required." });
   }
+  // check if original url already exists, if yes then return the saved short url
+  const url = await Url.findOne({ originalUrl });
+  if (url) {
+    return res.json(url);
+  }
+
   const shortUrl = nanoid(8);
   const newUrl = new Url({
     originalUrl,
