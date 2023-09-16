@@ -56,7 +56,7 @@ app.get("/:shortUrl", async (req, res) => {
     return res.sendStatus(404);
   }
 
-  res.json({ originalUrl: url.originalUrl });
+  res.redirect(url.originalUrl);
 });
 
 export default app;

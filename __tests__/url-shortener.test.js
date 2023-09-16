@@ -92,7 +92,7 @@ describe("Test the /:shortUrl endpoint", () => {
     await testUrl.save();
 
     const response = await request(app).get("/" + testUrl.shortUrl);
-    expect(response.status).toEqual(200);
-    expect(response.body.originalUrl).toEqual(testUrl.originalUrl);
+    expect(response.status).toEqual(302);
+    expect(response.header.location).toEqual(testUrl.originalUrl);
   });
 });
