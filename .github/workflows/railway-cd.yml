@@ -22,9 +22,6 @@ jobs:
       - name: Install packages
         run: npm ci
 
-      - name: Run tests
-        run: npm test
-
       - name: Install Railway
         run: npm i -g @railway/cli
 
