@@ -21,7 +21,29 @@ const app = express();
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.status(200).send("Hello World!");
+  res.json({
+    message: "Welcome to Shawtyfy URL Shortener API",
+    description:
+      "This API allows you to shorten long URLs and retrieve the original URLs using shortcodes.",
+    endpoints: {
+      shortenUrl: {
+        method: "POST",
+        path: "/shorten",
+        description:
+          "Shorten a long URL. Send a POST request with 'originalUrl' in the request body.",
+      },
+      retrieveUrl: {
+        method: "GET",
+        path: "/:shortUrl",
+        description: "Retrieve the original URL associated with a short URL.",
+      },
+      getAllUrls: {
+        method: "GET",
+        path: "/all",
+        description: "Get a list of all currently saved URLs.",
+      },
+    },
+  });
 });
 
 app.post("/shorten", async (req, res) => {
@@ -54,7 +76,10 @@ app.get("/:shortUrl", async (req, res) => {
 
   // should have followed the normal url convention but /shorturl just seems shorter in normal cases
   if (shortUrl == "all") {
-    const urls = await Url.find({}, { originalUrl: 1, shortUrl: 1, visited: 1, _id: 0 });
+    const urls = await Url.find(
+      {},
+      { originalUrl: 1, shortUrl: 1, visited: 1, _id: 0 }
+    );
     return res.json(urls);
   }
   const url = await Url.findOne({ shortUrl });
