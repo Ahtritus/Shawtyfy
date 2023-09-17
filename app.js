@@ -54,7 +54,7 @@ app.get("/:shortUrl", async (req, res) => {
 
   // should have followed the normal url convention but /shorturl just seems shorter in normal cases
   if (shortUrl == "all") {
-    const urls = await Url.find();
+    const urls = await Url.find({}, { originalUrl: 1, shortUrl: 1, visited: 1, _id: 0 });
     return res.json(urls);
   }
   const url = await Url.findOne({ shortUrl });
